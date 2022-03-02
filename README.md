@@ -1,3 +1,8 @@
+# Agenda created with React v. 17.0.2 
+### used react-router-dom v. 6
+
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
