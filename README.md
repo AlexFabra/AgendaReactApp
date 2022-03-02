@@ -1,5 +1,8 @@
 # Agenda created with React v. 17.0.2 
-### used react-router-dom v. 6
+### dependencies version
+react-router-dom v. 6 \
+bootstrap v.5.1.3 \
+fontAwesome v.6.0.0
 
 
 
