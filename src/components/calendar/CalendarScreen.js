@@ -9,6 +9,8 @@ import { CalendarModal } from './CalendarModal'
 import { NavBar } from '../ui/NavBar'
 import { messages } from '../../helpers/calendar-messages-es'
 import moment from 'moment'
+import { uiOpenModal } from '../../actions/ui.js'
+import { useDispatch } from 'react-redux'
 
 moment.locale('es');
 
@@ -28,6 +30,8 @@ const events = [{
 
 export const CalendarScreen = () => {
 
+  const dispatch = useDispatch();
+
   //useState para mostrar la vista cuyo id se ha guardado en el localStorage, si hay:
   //debemos adjuntar la constante lastView en el calendario, en la propiedad view
   const [lastView, setLastView] = useState(localStorage.getItem('lastView') || 'month');
@@ -35,6 +39,8 @@ export const CalendarScreen = () => {
   //obtenemos la información del evento clicado (doble click)
   const onDoubleClick = (e) => {
     console.log(e);
+    console.log('abrir modal');
+    dispatch(uiOpenModal());
   }
   //cuando se clique sobre un evento:
   const onSelectEvent = (e) => {
