@@ -1,6 +1,7 @@
 import './modalStyles.css'
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { eventAddNew, eventClearActiveEvent, eventUpdated } from '../../actions/events';
 import { useDispatch, useSelector } from 'react-redux';
 
 import DateTimePicker from 'react-datetime-picker'
@@ -9,6 +10,8 @@ import Swal from 'sweetalert2';
 import moment from 'moment';
 import { uiCloseModal } from '../../actions/ui';
 
+//ya que está fuera del componente, cada vez que se genere un cambio no se 
+//volverá a construir la constante
 const customStyles = {
     content: {
         top: '50%',
@@ -23,14 +26,24 @@ const customStyles = {
 const now = moment().minutes(0).seconds(0).add(1, 'hours');
 const future = now.clone().add(1, 'hours'); //clonamos para no pasar now como referencia ni modificarlo.
 
+const initEvent = {
+
+    title: '',
+    notes: '',
+    start: now.toDate(),
+    end: future.toDate()
+
+}
+
 // Make sure to bind modal to your appElement (https://reactcommunity.org/react-modal/accessibility/)
 Modal.setAppElement('#root');
 
 export const CalendarModal = () => {
 
     const dispatch = useDispatch();
-    const {modalOpen} = useSelector( state => state.ui );
-    
+    const { modalOpen } = useSelector(state => state.ui);
+    const { activeEvent } = useSelector(state => state.calendar);
+
     //const [isOpen, setIsOpen] = useState(true);
 
     const [dateStart, setDateStart] = useState(now.toDate());
@@ -38,17 +51,20 @@ export const CalendarModal = () => {
 
     const [titleValid, setTitleValid] = useState(true)
     //para manejar los valores del formulario:
-    const [formValues, setformValues] = useState(
-        {
-            title: 'Evento',
-            notes: '',
-            start: now.toDate(),
-            end: future.toDate()
-        }
-    )
+    const [formValues, setformValues] = useState(initEvent);
     //
     const { notes, title, start, end } = formValues;
 
+    //con este hook obtenemos la info del formulario en el que se ha clicado
+    useEffect(() => {
+        if(activeEvent){
+            setformValues(activeEvent);
+        } else { //si no hay evento activo el formulario se reestablece
+            setformValues(initEvent);
+        }
+    }, [activeEvent,setformValues])
+    
+    
     //para modificar los formValues:
     const handleInputChange = ({ target }) => {
         setformValues({
@@ -67,7 +83,9 @@ export const CalendarModal = () => {
         //setIsOpen(false);
         //TODO:cerrar modal 
         dispatch(uiCloseModal())
-        
+        dispatch(eventClearActiveEvent());
+        setformValues(initEvent);
+
     }
 
     //recibe un evento tipo fecha
@@ -93,14 +111,27 @@ export const CalendarModal = () => {
         const momentStart = moment(start);
         const momentEnd = moment(end);
 
-        if(momentStart.isSameOrAfter(momentEnd)){
+        if (momentStart.isSameOrAfter(momentEnd)) {
             console.log("fecha dos debe ser mayor")
-            Swal.fire('Error','la fecha final debe ser mayor a la inicial','error');
+            Swal.fire('Error', 'la fecha final debe ser mayor a la inicial', 'error');
         }
-        if(title.trim().length <1){
+        if (title.trim().length < 1) {
             return setTitleValid(false);
         }
-        //TODO: guardar los datos en la bdd
+        
+        if(activeEvent){ //actualizando nota:
+            dispatch(eventUpdated(formValues))
+        } else { //creando nueva nota:
+            dispatch(eventAddNew({ //estos datos no deberian crearse en el front
+                ...formValues,
+                id: new Date().getTime(),
+                user: {
+                    _id: '123',
+                    name: 'Alejandro'
+                }
+            }));    
+        }
+        
         setTitleValid(true);
         closeModal();
     }
@@ -113,11 +144,11 @@ export const CalendarModal = () => {
             style={customStyles}
             contentLabel="Example Modal"
         >
-            <h1> Nuevo evento </h1>
+            <h1>{(activeEvent)? 'Editar evento':'Nuevo evento'} </h1>
             <hr />
-            <form 
-            className="container"
-            onSubmit={handleSubmitForm}>
+            <form
+                className="container"
+                onSubmit={handleSubmitForm}>
 
                 <div className="form-group">
                     <label>Fecha y hora inicio</label>
