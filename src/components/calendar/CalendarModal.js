@@ -1,7 +1,7 @@
 import './modalStyles.css'
 
 import React, { useEffect, useState } from 'react';
-import { eventAddNew, eventClearActiveEvent, eventUpdated } from '../../actions/events';
+import { eventClearActiveEvent, eventStartAddNew, eventUpdated } from '../../actions/events';
 import { useDispatch, useSelector } from 'react-redux';
 
 import DateTimePicker from 'react-datetime-picker'
@@ -57,14 +57,14 @@ export const CalendarModal = () => {
 
     //con este hook obtenemos la info del formulario en el que se ha clicado
     useEffect(() => {
-        if(activeEvent){
+        if (activeEvent) {
             setformValues(activeEvent);
         } else { //si no hay evento activo el formulario se reestablece
             setformValues(initEvent);
         }
-    }, [activeEvent,setformValues])
-    
-    
+    }, [activeEvent, setformValues])
+
+
     //para modificar los formValues:
     const handleInputChange = ({ target }) => {
         setformValues({
@@ -118,20 +118,13 @@ export const CalendarModal = () => {
         if (title.trim().length < 1) {
             return setTitleValid(false);
         }
-        
-        if(activeEvent){ //actualizando nota:
+
+        if (activeEvent) { //actualizando nota:
             dispatch(eventUpdated(formValues))
-        } else { //creando nueva nota:
-            dispatch(eventAddNew({ //estos datos no deberian crearse en el front
-                ...formValues,
-                id: new Date().getTime(),
-                user: {
-                    _id: '123',
-                    name: 'Alejandro'
-                }
-            }));    
+        } else { //creando nueva nota (llamamos a la funcion que graba en la base de datos y actualiza el state)
+            dispatch(eventStartAddNew(formValues));
         }
-        
+
         setTitleValid(true);
         closeModal();
     }
@@ -144,7 +137,7 @@ export const CalendarModal = () => {
             style={customStyles}
             contentLabel="Example Modal"
         >
-            <h1>{(activeEvent)? 'Editar evento':'Nuevo evento'} </h1>
+            <h1>{(activeEvent) ? 'Editar evento' : 'Nuevo evento'} </h1>
             <hr />
             <form
                 className="container"
