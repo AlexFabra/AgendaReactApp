@@ -3,8 +3,8 @@ import 'moment/locale/es'
 import '../../styles.css'
 
 import { Calendar, momentLocalizer } from 'react-big-calendar'
-import React, { useState } from 'react'
-import { eventClearActiveEvent, eventSetActive } from '../../actions/events'
+import React, { useEffect, useState } from 'react'
+import { eventClearActiveEvent, eventSetActive, eventStartLoading } from '../../actions/events'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { AddNewFab } from '../ui/AddNewFab'
@@ -29,6 +29,10 @@ export const CalendarScreen = () => {
   //useState para mostrar la vista cuyo id se ha guardado en el localStorage, si hay:
   //debemos adjuntar la constante lastView en el calendario, en la propiedad view
   const [lastView, setLastView] = useState(localStorage.getItem('lastView') || 'month');
+
+  useEffect(() => {
+    dispatch(eventStartLoading());
+  }, [dispatch]);
 
   //obtenemos la información del evento clicado (doble click)
   const onDoubleClick = (e) => {
