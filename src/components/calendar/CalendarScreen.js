@@ -37,13 +37,10 @@ export const CalendarScreen = () => {
 
   //obtenemos la información del evento clicado (doble click)
   const onDoubleClick = (e) => {
-    console.log(e);
-    console.log('abrir modal');
     dispatch(uiOpenModal());
   }
   //cuando se clique sobre un evento:
   const onSelectEvent = (e) => {
-    console.log(e);
     dispatch(eventSetActive(e));
   }
   //cuando cambie la vista del calendario (mes/semana/dia/agenda)

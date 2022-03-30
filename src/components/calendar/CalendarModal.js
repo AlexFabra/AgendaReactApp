@@ -1,7 +1,7 @@
 import './modalStyles.css'
 
 import React, { useEffect, useState } from 'react';
-import { eventClearActiveEvent, eventStartAddNew, eventUpdated } from '../../actions/events';
+import { eventClearActiveEvent, eventStartAddNew, eventStartUpdate } from '../../actions/events';
 import { useDispatch, useSelector } from 'react-redux';
 
 import DateTimePicker from 'react-datetime-picker'
@@ -120,7 +120,7 @@ export const CalendarModal = () => {
         }
 
         if (activeEvent) { //actualizando nota:
-            dispatch(eventUpdated(formValues))
+            dispatch(eventStartUpdate(formValues))
         } else { //creando nueva nota (llamamos a la funcion que graba en la base de datos y actualiza el state)
             dispatch(eventStartAddNew(formValues));
         }
