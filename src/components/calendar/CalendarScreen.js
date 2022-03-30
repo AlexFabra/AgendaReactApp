@@ -25,6 +25,7 @@ export const CalendarScreen = () => {
 
   const dispatch = useDispatch();
   const { events, activeEvent } = useSelector(state => state.calendar);
+  const { uid } = useSelector(state => state.auth);
 
   //useState para mostrar la vista cuyo id se ha guardado en el localStorage, si hay:
   //debemos adjuntar la constante lastView en el calendario, en la propiedad view
@@ -60,8 +61,11 @@ export const CalendarScreen = () => {
   //lo que regrese esta constante es el estilo que le va a aplicar 
   //al evento.
   const eventStyleGetter = (event, start, end, isSelected) => {
+
+    //el color del evento dependerá de si es el usuario quien lo creó o no:
+
     const style = {
-      backgroundColor: '#367CF7',
+      backgroundColor: (uid===event.user._id) ? '#367CF7' : '#467311',
       borderRadius: '0px',
       opacity: 0.8,
       display: 'block',
