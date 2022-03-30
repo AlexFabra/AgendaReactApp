@@ -1,6 +1,7 @@
 import { fetchConToken, fetchSinToken } from "../helpers/fetch"
 
 import Swal from "sweetalert2";
+import { eventClearActiveEvent } from "./events";
 import { types } from "../types/types";
 
 /** dado un mail y un pwd, intenta iniciar sesion con un post a la api, 
@@ -78,6 +79,7 @@ export const startLogout = () => {
     return (dispatch) => {
         localStorage.clear();
         dispatch(logout());
+        dispatch(eventClearActiveEvent());
     }
 }
 

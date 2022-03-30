@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 
-import React from 'react'
+import React from 'react';
 import { startLogout } from '../../actions/auth';
 
 export const NavBar = () => {
