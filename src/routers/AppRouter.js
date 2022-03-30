@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 
 export const AppRouter = () => {
 
+  //renovar token de usuario 
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(startChecking());

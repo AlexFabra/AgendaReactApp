@@ -31,6 +31,9 @@ export const startRegister = (email, password, name) => {
     }
 }
 
+/** startchecking renovará el token
+ * @returns 
+ */
 export const startChecking = () => {
     return async (dispatch) => {
         const resp = await fetchConToken('auth/renew');
@@ -45,7 +48,7 @@ export const startChecking = () => {
     }
 }
 
-const checkingFinish = () => ({
+const authCheckingFinish = () => ({
     type: types.authCheckingFinish
 });
 
